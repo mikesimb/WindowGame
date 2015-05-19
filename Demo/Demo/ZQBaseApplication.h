@@ -10,7 +10,7 @@
 #pragma once
 
 #ifndef  __ZQBASEAPPLICATION__
-#define __ZQBASEAPPLICATION__
+#define  __ZQBASEAPPLICATION__
 
 #include <windows.h>
 #include "WinMsgControler.h"
@@ -19,11 +19,13 @@
 class CZQBaseApplication :public CWinMsgControler, public WNDFrameListener
 {
 public:
-	CZQBaseApplication();
+	CZQBaseApplication()
+	{
+	};
 	virtual ~CZQBaseApplication();
 
 	virtual BOOL Init();
-	virtual void Term();
+	virtual void Finalize();
 
 
 	void SetFPS(DWORD dwFPS);
@@ -44,8 +46,8 @@ public:  //WNDFrameListener
 	virtual BOOL OnWndProc(CZQWinBase * win, UINT msg, WPARAM wparam, LPARAM lparam, HRESULT& ret);
 
 	//mouse
-	virtual void OnMouseWheel(ShiftStates shift, const POINT & pt, SHORT nRow);
-	virtual void OnMouseMove(ShiftStates shift, const POINT & pt);
+	//virtual void OnMouseWheel(ShiftStates shift, const POINT & pt, SHORT nRow);
+	//virtual void OnMouseMove(ShiftStates shift, const POINT & pt);
 
 
 
@@ -72,6 +74,35 @@ private:
 	BOOL m_bEraseBK;
 
 };
+
+inline CZQBaseApplication::CZQBaseApplication() 
+:m_dwLastTick(0),
+m_dwFrameDelayTime(0),
+m_dwFPS(0), 
+m_dwLastSecTick(0),
+m_dwFPSCount(0), 
+m_bRunAlways(FALSE),
+m_bEraseBK(TRUE)
+{
+
+}
+
+inline CZQBaseApplication::~CZQBaseApplication()
+{
+
+}
+
+inline BOOL CZQBaseApplication::Init()
+{
+	m_MainWin.setListener(this);
+	m_dwLastTick = timeGetTime();
+	m_dwLastSecTick = m_dwLastTick;
+
+	m_uPeriod = 1;
+	m_
+
+}
+
 
 
 #endif
