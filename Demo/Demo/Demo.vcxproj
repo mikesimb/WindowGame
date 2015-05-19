@@ -70,6 +70,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.h" />
+    <ClInclude Include="DirectXInterface.h" />
+    <ClInclude Include="DXType.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="WinMsgControler.h" />
     <ClInclude Include="ZQBaseApplication.h" />
