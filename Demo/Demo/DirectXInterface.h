@@ -207,9 +207,101 @@ public:
 typedef CDXFont *LPDXFONT;
 
 //2015年5月19日  今天写不动了，明天继续把，明天要写顶点缓冲区的类了
+class CDXVertexBuffer :public CDXResource
+{
+public:
+	CDXVertexBuffer(CDXResourceNode * pOwner, DWORD dwKey) :CDXResource(pOwner, dwKey){}
+	virtual HRESULT Append(int nCount, vid **ppVertex) = 0;
+	virtual void clear() = 0;
+	virtual int GetBuffer(void ** Buffer) const = 0;
+	virtual int GetCount() = 0;
+	virtual void SetType(DWORD dwType) = 0;
+	virtual DWORD GetType()const = 0;
+	virtual void SetFVF() const = 0;
+	virtual DWORD GetFVF() const = 0;
+	virtual DXFillMode GetFillMode() const = 0;
+	virtual void SetState(DXVertexState state) = 0;
+	virtual DXVertexState GetState() = 0;
+	virtual void Offset(float cx, float cy) = 0;
+	virtual void SetPos(float cx, float cy) = 0;
+	virtual void RotateAndScale(float cx, float cy, float scale, float angle) = 0;
+
+	virtual void BuildGuiVertex(DXGUIVertexType GUIVertexType, const RECT &DestRect, const LPRECT pSrcRect,
+		int nWidth, int nHeight, int HState, int VState, int CurIndex, DWORD dwColor = 0xFFFFFFFF) = 0;
+
+	virtual void BuildGuiVertex(DXGUIVertexType GUIVertexType, const RECT &DestRect, const LPRECT pSrcRect,
+		int nWidth, int nHeight,int TexWidth, int TexHeighh, int HState, int VState, int CurIndex, DWORD dwColor = 0xFFFFFFFF) = 0;
+
+	virtual void RotateAndScale(float scale, float angle) = 0;
+	virtual DXGUIVertexType GetGUIVertextType() const = 0;
 
 
+};
 
+typedef CDXVertexBuffer *LPDXVertexBuffer;
+
+class  CDXSurface :public CDXResource
+{
+public:
+	CDXSurface(CDXResourceNode * pOwner, DWORD dwKey) :CDXResource(pOwner, dwKey){}
+	virtual BOOL BeginDraw(const LPDXVIEWPORT pViewPort) = 0;
+	virtual void Clear() = 0;
+	virtual void EndDraw() = 0;
+	virtual BOOL GetImage(LPDXIMAGE * pImage) = 0;
+
+};
+typedef CDXSurface * LPDXSURFACE;
+
+class  CDXPRTS :public CDXResource
+{
+public:
+	CDXPRTS(CDXResourceNode * pOwner, DWORD dwKey) :CDXResource(pOwner, dwKey){}
+	virtual BOOL BeginDraw(const LPDXVIEWPORT pViewPort) = 0;
+	virtual void Clear() = 0;
+	virtual void EndDraw() = 0;
+	virtual BOOL GetImage(LPDXIMAGE * pImage) = 0;
+
+};
+typedef CDXPRTS * LPDXPRTS;
+
+class CDXEffect :public CDXResource
+{
+public:
+	CDXEffect(CDXResourceNode *pOwner, DWORD dwKey) :CDXResource(pOwner, dwKey){}
+	virtual HRESULT ApplyEffect(DWORD dwApply) = 0;
+	virtual HRESULT BeginEffect(LPCSTR Technique, UINT Pass = 0) = 0;
+	virtual HRESULT EndEffect() = 0;
+	virtual HRESULT SetBool(LPCSTR Name, BOOL Value) = 0;
+	virtual HRESULT GetBool(LPCSTR Name, BOOL *pVaule) = 0;
+	virtual HRESULT SetInt(LPCSTR Name, INT n) = 0;
+	virtual HRESULT GetInt(LPCSTR Name, INT *pn) = 0;
+	virtual HRESULT SetFloat(LPCSTR Name, float f) = 0;
+	virtual HRESULT GetFloat(LPCSTR Name, float * pf) = 0;
+	virtual HRESULT SetFloatArray(LPCSTR Name, CONST float * pf, UINT Count) = 0;
+	virtual HRESULT SetVector(LPCSTR Name, LPVECTOR4 pValue) = 0;
+	virtual HRESULT GetVector(LPCSTR Name, LPVECTOR4 pValue) = 0;
+	virtual HRESULT SetTexture(LPCSTR Name, LPDXIMAGE pTexture) = 0;
+
+};
+typedef CDXEffect * LPCDXEFFECT;
+
+class CDXRender
+{
+public:
+	virtual void OnInitialize() = 0;
+	virtual void OnInvalidate() = 0;
+	virtual void OnRestore() = 0;
+	virtual void OnUpdate(DWORD dwCurTime, BOOL bLoadOnly) = 0;
+	virtual void OnFinalize() = 0;
+	
+	CDXRender(LPDXDevice Device) :m_Device(Device){}
+	virtual ~CDXRender(){}
+
+	//绘制接口
+	virtual void DrawLine(const LPPOINT_F pPoint, INT bCount, DWORD) = 0;
+	virtual void DrawRectangle(const LPRE)
+
+};
 
 
 

@@ -103,7 +103,85 @@ typedef struct tagDXDisplayMode
 	DXColorFormat Format;
 } DXDisplayMode ,*LPDXDisplayMode;
 
+typedef enum DXGUIVertexType
+{
+	DX_GUIVT_NONE = 0,
+	DX_GUIVT_NORMAL = 1,
+	DX_GUIVT_STRETCH =2,
+	DX_GUIVT_SQUARES = 3,
+	DX_GUIVT_TILE = 4,
+	DX_GUIVT_CRICLE = 5,
 
+};
+
+inline int GetPixelSize(DWORD dwFormat)
+{
+	switch (dwFormat)
+	{
+	case DX_CF_R8G8B8:return 3;
+	case DX_CF_A8R8G8B8 :
+	case DX_CF_X8R8G8B8:return 4;
+	case DX_CF_R5G6B5 :
+	case DX_CF_X1R5G5B5:
+	case DX_CF_A1R5G5B5:
+	case DX_CF_A4R4G4B4: return 2;
+	case DX_CF_A8: return 1;
+	case DX_CF_DXT1:return 8;
+	case DX_CF_DXT5: return 16;
+	default: return 0;
+
+	}
+}
+
+inline int GetLinePitch(DWORD dwFormat, int Width)
+{
+	int PixelSize = GetPixelSize(dwFormat);
+	switch (dwFormat)
+	{
+	case DX_CF_R8G8B8 :
+	case DX_CF_A8R8G8B8:
+	case DX_CF_X8R8G8B8:
+	case DX_CF_R5G6B5:
+	case DX_CF_X1R5G5B5:
+	case DX_CF_A1R5G5B5:
+	case DX_CF_A4R4G4B4:
+	case DX_CF_A8:
+		return (Width*PixelSize + 3) & 0xFFFFFFFC;
+	case DX_CF_DXT1:
+	case DX_CF_DXT5:
+		return Width * PixelSize / 4;
+
+	default:
+		return 0 ;
+	}
+}
+
+inline int GetLinePitchNoAlign(DWORD dwFormat, int Width)
+{
+	int PixelSize = GetPixelSize(dwFormat);
+	return Width * PixelSize;
+}
+
+typedef struct tagVector4
+{
+	float x, y, z, w;
+}Vector4 ,*LPVECTOR4;
+
+class POINT_F
+{
+public:
+	Point_F() :x(0.0f), y(0.0f){}
+	Point_F(float fx, float fy) :x(fx), y(fy){}
+	Point_F(const POINT &pf) :x((float)pf.x), y((float)pf.y){}
+	void Offset(float fx, float fy){ x += fx; y += fy; }
+
+	BOOL operator == (const Point_F& pt) const { return x == pt.x && y == pt.y; }
+	BOOL operator != (const Point_F& pt) const { return x != pt.x || y != pt.y; }
+public :
+	float x, y;
+};
+
+typedef POINT_F * LPPOINT_F;
 
 
 
