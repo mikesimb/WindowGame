@@ -1,10 +1,11 @@
 #pragma once
 #include <windows.h>
 
+class CBaseWindowMsgControl;
 class CBaseWindowMsgControlListener
 {
-	virtual BOOL OnProcessMsg(CBaseWindowMsgControl Sender, MSG & Msg) = 0;
-	virtual BOOL OnProcessIdel(CBaseWindowMsgControl Sender) = 0;
+	virtual BOOL OnProcessMsg(CBaseWindowMsgControl* Sender, MSG & Msg) = 0;
+	virtual BOOL OnProcessIdel(CBaseWindowMsgControl* Sender) = 0;
 };
 
 class CBaseWindowMsgControl
