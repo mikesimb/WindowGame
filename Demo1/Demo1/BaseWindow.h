@@ -458,7 +458,7 @@ inline void CBaseWindow::SetVisable(BOOL bVisable)
 		if (::IsIconic(m_hwnd))
 			::ShowWindow(m_hwnd, SW_SHOWMAXIMIZED);
 		else
-			ShowWindow(m_hwnd, SW_SHOWNORMAL);
+			::ShowWindow(m_hwnd, SW_SHOWNORMAL);
 		OnShow();
 	}
 	else
