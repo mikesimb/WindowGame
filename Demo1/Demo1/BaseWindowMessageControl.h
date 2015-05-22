@@ -1,5 +1,8 @@
 #pragma once
 #include <windows.h>
+#include<Mmsystem.h>
+
+#pragma comment(lib,"Winmm.lib")
 
 class CBaseWindowMsgControl;
 class CBaseWindowMsgControlListener

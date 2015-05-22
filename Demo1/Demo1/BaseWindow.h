@@ -128,7 +128,7 @@ public:
 
 	//这个是不是放在这里现在还是个疑问？？？
 	void SetInstance(HINSTANCE instance);
-	void SetWindowListener(BaseWindowListener listener);
+	void SetWindowListener(BaseWindowListener* listener);
 
 	HRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
@@ -274,6 +274,7 @@ inline void CBaseWindow::Close()
 	//这里关闭分为很多种是不是需要?可以参考DLEPHI xe7里TForm里的方法。
 	//目前这里只放一个方法。
 	::DestroyWindow(m_hwnd);
+	Quit();
 }
 
 inline void CBaseWindow::Hide()
@@ -699,18 +700,17 @@ inline HRESULT CALLBACK CBaseWindow::WndProc(HWND hwnd, UINT msg, WPARAM wparam,
 		LPCREATESTRUCTW pcs = (LPCREATESTRUCTW)lparam;
 
 		assert(pcs->lpCreateParams);
-		CBaseWindow* Window = (CZQWinBase*)pcs->lpCreateParams;
+		CBaseWindow* Window = (CBaseWindow*)pcs->lpCreateParams;
 		Window->m_hwnd = hwnd;
-
 		//assert(::GetPropW(hWnd, WINDOWS_ATOM) == NULL);
 		//::SetWindowLongW(hWnd, GWL_WNDPROC, (LONG)StdWndProc);
-		::SetPropW(hwnd, WINDOW_ATOM, (HANDLE)pcs->lpCreateParams);
-
-		LRESULT ret = TRUE;
-		hwnd->WindowProc(hwnd, msg, wparam, lparam, ret);
+		::SetPropW(hwnd, WINDOW_ATOM, (HANDLE)pcs->lpCreateParams);	
+		LRESULT ret;
+		ret = Window->WindowProc(hwnd, msg, wparam, lparam);
 		return ret;
 	}
-	return ::CallWindowProcW(DefWindowProcW, hwnd, msg, wparam, lparam);
+
+		return ::CallWindowProcW(DefWindowProcW, hwnd, msg, wparam, lparam);
 
 }
 
