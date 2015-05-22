@@ -130,7 +130,7 @@ public:
 	void SetInstance(HINSTANCE instance);
 	void SetWindowListener(BaseWindowListener* listener);
 
-	HRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
+	BOOL CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam,LRESULT lRet);
 
 	static HRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
@@ -206,6 +206,8 @@ inline BOOL CBaseWindow::Create(int Left /* = 0 */, int Top /* = 0 */, int Width
 					NULL,
 					0,
 					this);
+		//这个函数是用来给这个窗口设置一个标志，利用这个标志可以通过HWND获取类
+		::SetProp(m_hwnd, WINDOW_ATOM, (HANDLE)this);
 		if (m_hwnd)
 		{
 			::SendMessage(m_hwnd, WM_SETICON, ICON_BIG, LPARAM(icon));
@@ -538,6 +540,7 @@ inline BOOL CBaseWindow::RegisterWndClass()
 		wcex.hIconSm = 0;
 		return RegisterClassEx(&wcex);
 	}	
+	return FALSE;
 }
 
 inline DWORD CBaseWindow::BorderIconsToWindowStyle(DWORD style, BorderIcons bi)
@@ -676,6 +679,7 @@ inline  void CBaseWindow::OnCreate()
 
 inline void CBaseWindow::OnDestroy()
 {
+	::RemoveProp(m_hwnd, WINDOW_ATOM);
 	if (m_Listener)
 		m_Listener->OnDestroy(this);
 }
@@ -694,36 +698,42 @@ void CBaseWindow::OnPosChange()
 
 inline HRESULT CALLBACK CBaseWindow::WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
+
+	CBaseWindow * window = NULL;
 	if (msg == WM_CREATE)
 	{
 		assert(lparam);
 		LPCREATESTRUCTW pcs = (LPCREATESTRUCTW)lparam;
-
 		assert(pcs->lpCreateParams);
-		CBaseWindow* Window = (CBaseWindow*)pcs->lpCreateParams;
-		Window->m_hwnd = hwnd;
-		//assert(::GetPropW(hWnd, WINDOWS_ATOM) == NULL);
-		//::SetWindowLongW(hWnd, GWL_WNDPROC, (LONG)StdWndProc);
-		::SetPropW(hwnd, WINDOW_ATOM, (HANDLE)pcs->lpCreateParams);	
-		LRESULT ret;
-		ret = Window->WindowProc(hwnd, msg, wparam, lparam);
-		return ret;
+		CBaseWindow * window = (CBaseWindow*)pcs->lpCreateParams;
+		::SetProp(hwnd, WINDOW_ATOM, (HANDLE)window);
 	}
 
-		return ::CallWindowProcW(DefWindowProcW, hwnd, msg, wparam, lparam);
+		window= (CBaseWindow*)GetPropW(hwnd, WINDOW_ATOM);
+		if (window)
+		{
+			LRESULT ret =0;
+			if (window->WindowProc(hwnd, msg, wparam, lparam, ret))
+				return ret;
+		}	
+    return ::CallWindowProcW(DefWindowProcW, hwnd, msg, wparam, lparam);
 
 }
 
-inline HRESULT CALLBACK CBaseWindow::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+inline BOOL CALLBACK CBaseWindow::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam, LRESULT lRet)
 {
-	if (m_hwnd == NULL)
+	if (hwnd == NULL)
 		return FALSE;
   
 	if (m_Listener)
-		HRESULT Result = m_Listener->OnWndProc(this, msg, wparam, lparam);
+		HRESULT lRet = m_Listener->OnWndProc(this, msg, wparam, lparam);
 
 	switch (msg)
 	{
+	case WM_CREATE:
+	{
+					  OutputDebugString(L"WM_CREATE;");
+	}
 	case WM_PAINT:
 	{
 					 PAINTSTRUCT ps;
