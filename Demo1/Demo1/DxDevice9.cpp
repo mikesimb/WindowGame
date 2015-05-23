@@ -14,7 +14,8 @@ CDxDevice9::~CDxDevice9()
 HRESULT CDxDevice9::InitiD3D(CBaseWindow* ParentWindow)
 {
 	// 这里初始化
-
+	if (ParentWindow == NULL) return E_FAIL;
+	m_ParentWindow = ParentWindow;
 	m_pD3D9 = Direct3DCreate9(D3D_SDK_VERSION);
 	if (m_pD3D9 == NULL)
 		return E_FAIL;

@@ -26,6 +26,7 @@ BOOL CApplication::CreateForm()
 
 BOOL CApplication::OnProcessIdel(CBaseWindowMsgControl* Sender)
 {
+	m_DxDevice.Render();
 	return TRUE;
 }
 
@@ -105,7 +106,8 @@ BOOL CApplication::Initizlized()
 
 BOOL CApplication::CreateDevice()
 {
-	return TRUE;
+	
+	return m_DxDevice.InitiD3D(&m_MainForm)==S_OK;
 }
 
 void CApplication::Run()
