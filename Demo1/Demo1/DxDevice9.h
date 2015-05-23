@@ -4,6 +4,11 @@
 #pragma  warning (disable : 4996)
 #include <vector>
 #include "BaseWindow.h"
+
+#pragma comment(lib, "d3d9.lib")  
+#pragma comment(lib, "d3dx9.lib")  
+
+
 class CDxDevice9
 {
 public:

@@ -7,8 +7,9 @@
 class CBaseWindowMsgControl;
 class CBaseWindowMsgControlListener
 {
-	virtual BOOL OnProcessMsg(CBaseWindowMsgControl* Sender, MSG & Msg) = 0;
-	virtual BOOL OnProcessIdel(CBaseWindowMsgControl* Sender) = 0;
+public:
+	virtual BOOL OnProcessMsg(CBaseWindowMsgControl* Sender, MSG & Msg) { return TRUE; };
+	virtual BOOL OnProcessIdel(CBaseWindowMsgControl* Sender) { return TRUE; };
 };
 
 class CBaseWindowMsgControl
@@ -29,8 +30,10 @@ public:
 	CBaseWindowMsgControlListener * GetMsgControlListener();
 
 protected:
-	virtual BOOL ProcessMessage(MSG & msg){ return FALSE; }
-	virtual void ProcessIdel(){}
+	virtual BOOL ProcessMessage(MSG & msg){
+		if (m_listener)  return m_listener->OnProcessMsg(this, msg); else return FALSE;
+	}
+	virtual void ProcessIdel(){ if (m_listener) m_listener->OnProcessIdel(this); }
 
 private: 
 	BOOL m_bRunning;
@@ -72,5 +75,15 @@ inline void CBaseWindowMsgControl::Quit()
 inline BOOL CBaseWindowMsgControl::IsRunning()
 {
 	return m_bRunning;
+}
+
+inline void CBaseWindowMsgControl::SetMsgControlListener(CBaseWindowMsgControlListener* listener)
+{
+	m_listener = listener;
+}
+
+inline CBaseWindowMsgControlListener* CBaseWindowMsgControl::GetMsgControlListener()
+{
+	return m_listener;
 }
 

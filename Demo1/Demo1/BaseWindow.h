@@ -42,9 +42,9 @@ struct BaseWindowListener
 	virtual void OnHide(CBaseWindow * sender){}
 	virtual void OnClose(CBaseWindow *sender){}
 	virtual void OnPaint(CBaseWindow *sender,HDC dc){}
-	virtual void OnSizeChange(CBaseWindow *sender, UINT ntype, int cx, int cy);
+	virtual void OnSizeChange(CBaseWindow *sender, UINT ntype, int cx, int cy){};
 	virtual void OnPosChange(CBaseWindow *sender){}
-	virtual BOOL OnWndProc(CBaseWindow *sender, UINT msg, WPARAM wParam, LPARAM lParam);
+	virtual BOOL OnWndProc(CBaseWindow *sender, UINT msg, WPARAM wParam, LPARAM lParam, HRESULT Ret){ return TRUE; };
 };
 
 
@@ -220,7 +220,7 @@ inline BOOL CBaseWindow::Create(int Left /* = 0 */, int Top /* = 0 */, int Width
 	return NULL != m_hwnd;
 }
 
-void CBaseWindow::UpdateWindowPos(int x , int y)
+inline void CBaseWindow::UpdateWindowPos(int x , int y)
 {
 	if (x < 0) x = 0;
 	if (y < 0) y = 0;
@@ -690,7 +690,7 @@ inline void CBaseWindow::OnSizeChange(UINT nType, INT cx, INT cy)
 		m_Listener->OnSizeChange(this, nType, cx, cy);
 }
 
-void CBaseWindow::OnPosChange()
+inline void CBaseWindow::OnPosChange()
 {
 	if (m_Listener)
 		m_Listener->OnPosChange(this);
@@ -725,8 +725,8 @@ inline BOOL CALLBACK CBaseWindow::WindowProc(HWND hwnd, UINT msg, WPARAM wparam,
 	if (hwnd == NULL)
 		return FALSE;
   
-	if (m_Listener)
-		HRESULT lRet = m_Listener->OnWndProc(this, msg, wparam, lparam);
+// 	if (m_Listener)
+// 	  BOOL Result = m_Listener->OnWndProc(this, msg, wparam, lparam,lRet);
 
 	switch (msg)
 	{

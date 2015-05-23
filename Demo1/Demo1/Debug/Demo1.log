@@ -1,3 +1,2 @@
-﻿  Main.cpp
-f:\windows\windowgame\demo1\demo1\basewindow.h(541): warning C4715: “CBaseWindow::RegisterWndClass”: 不是所有的控件路径都返回值
+﻿  Application.cpp
   Demo1.vcxproj -> F:\Windows\WindowGame\Demo1\Debug\Demo1.exe
