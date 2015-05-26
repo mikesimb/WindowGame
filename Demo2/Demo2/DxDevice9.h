@@ -7,7 +7,14 @@
 
 #pragma comment(lib, "d3d9.lib")  
 #pragma comment(lib, "d3dx9.lib")  
+struct CUSTOMVERTEX
+{
+	FLOAT x, y, z, rhw; // The transformed position for the vertex
+	DWORD color;        // The vertex color
+};
 
+// Our custom FVF, which describes our custom vertex structure
+#define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZRHW |D3DFVF_DIFFUSE)
 
 class CDxDevice9
 {
@@ -19,11 +26,14 @@ public:
 	void Clearup();
 
 	void Render();
+
+	void DrawLine(int sx, int sy, int dx, int dy, DWORD dwColor);
 private:
 
 	LPDIRECT3D9   m_pD3D9;
 	LPDIRECT3DDEVICE9  m_pDxDevice9;
 	CBaseWindow * m_ParentWindow;
 	BOOL    m_bInitialized;  // «∑Ò≥ı ºªØ£∫
+
 };
 
