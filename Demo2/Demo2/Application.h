@@ -28,7 +28,7 @@ public:
 
 	virtual BOOL OnProcessIdel(CBaseWindowMsgControl* Sender);
 	virtual BOOL OnProcessMsg(CBaseWindowMsgControl* Sender, MSG & Msg);
-
+	float Get_FPS();
 
 private:
 	CBaseWindow  m_MainForm;

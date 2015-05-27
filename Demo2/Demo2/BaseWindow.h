@@ -777,6 +777,12 @@ inline BOOL CALLBACK CBaseWindow::WindowProc(HWND hwnd, UINT msg, WPARAM wparam,
 	return FALSE;
 }
 
+inline int CBaseWindow::GetHeight()
+{
+	return m_nHeight;
+
+}
+
 
 
 
