@@ -152,6 +152,7 @@ void CDxDevice9::DrawLine(int sx, int sy, int dx, int dy, DWORD dwColor)
 	// gain access to the vertices. This mechanism is required becuase vertex
 	// buffers may be in device memory.
 	VOID* pVertices;
+	if (g_pVB  == NULL) return;
 	if (FAILED(g_pVB->Lock(0, sizeof(vertices), (void**)&pVertices, 0)))
 		return;
 	memcpy(pVertices, vertices, sizeof(vertices));
@@ -160,6 +161,7 @@ void CDxDevice9::DrawLine(int sx, int sy, int dx, int dy, DWORD dwColor)
 	m_pDxDevice9->SetStreamSource(0, g_pVB, 0, sizeof(CUSTOMVERTEX));
 	m_pDxDevice9->SetFVF(D3DFVF_CUSTOMVERTEX);
 	m_pDxDevice9->DrawPrimitive(D3DPT_LINELIST, 0, 1);
+	g_pVB->Release();
 
 	
 }
@@ -236,6 +238,7 @@ void CDxDevice9::DrawRectangle(RECT rect, DWORD dwColor)
 	m_pDxDevice9->SetFVF(D3DFVF_CUSTOMVERTEX);
 	m_pDxDevice9->SetIndices(pIndexBuffer);//设置索引缓存  
 	m_pDxDevice9->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 4, 0, 2);//利用索引缓存配合顶点缓存绘制图形  
-
+	g_pVB->Release();
+	pIndexBuffer->Release();
 }
 
