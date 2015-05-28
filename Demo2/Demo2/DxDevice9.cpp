@@ -165,8 +165,7 @@ void CDxDevice9::DrawLine(int sx, int sy, int dx, int dy, DWORD dwColor)
 
 	
 }
-
-void CDxDevice9::DrawRectangle(RECT rect, DWORD dwColor)
+void CDxDevice9::DrawRectangleFill(RECT rect, DWORD dwColor)
 {
 	//首先创建定点缓冲区
 	LPDIRECT3DVERTEXBUFFER9  g_pVB;
@@ -237,7 +236,88 @@ void CDxDevice9::DrawRectangle(RECT rect, DWORD dwColor)
 	m_pDxDevice9->SetStreamSource(0, g_pVB, 0, sizeof(CUSTOMVERTEX));
 	m_pDxDevice9->SetFVF(D3DFVF_CUSTOMVERTEX);
 	m_pDxDevice9->SetIndices(pIndexBuffer);//设置索引缓存  
+
 	m_pDxDevice9->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, 4, 0, 2);//利用索引缓存配合顶点缓存绘制图形  
+	g_pVB->Release();
+	pIndexBuffer->Release();
+}
+
+
+
+
+void CDxDevice9::DrawRectangle(RECT rect, DWORD dwColor)
+{
+	//首先创建定点缓冲区
+	LPDIRECT3DVERTEXBUFFER9  g_pVB;
+	LPDIRECT3DINDEXBUFFER9  pIndexBuffer;
+	CUSTOMVERTEX vertices[4];
+	for (int i = 0; i < 4; i++)
+	{
+		switch (i)
+		{
+		case 0:
+			vertices[i].x = (float)rect.left;
+			vertices[i].y = (float)rect.top;
+			break;
+		case 1:
+			vertices[i].x = (float)rect.right;
+			vertices[i].y = (float)rect.top;
+			break;
+		case 2:
+			vertices[i].x = (float)rect.right;
+			vertices[i].y = (float)rect.bottom;
+			break;
+		case 3:
+			vertices[i].x = (float)rect.left;
+			vertices[i].y = (float)rect.bottom;
+			break;
+		default:
+			break;
+		}
+		vertices[i].z = 0.0f;
+		vertices[i].color = dwColor;
+		vertices[i].rhw = 1.0f;
+
+	}
+	// Create the vertex buffer. Here we are allocating enough memory
+	// (from the default pool) to hold all our 3 custom vertices. We also
+	// specify the FVF, so the vertex buffer knows what data it contains.
+	if (FAILED(m_pDxDevice9->CreateVertexBuffer(3 * sizeof(CUSTOMVERTEX),
+		0, D3DFVF_CUSTOMVERTEX,
+		D3DPOOL_DEFAULT, &g_pVB, NULL)))
+	{
+		return;
+	}
+
+
+	WORD indexbuf[] = {0,1,1,2,2,3,3,0 };
+
+	if (FAILED(m_pDxDevice9->CreateIndexBuffer(2 * 16 * sizeof(WORD), 0,
+		D3DFMT_INDEX16, D3DPOOL_DEFAULT, &pIndexBuffer, NULL)))
+	{
+		return;
+
+	}
+
+	// Now we fill the vertex buffer. To do this, we need to Lock() the VB to
+	// gain access to the vertices. This mechanism is required becuase vertex
+	// buffers may be in device memory.
+	VOID* pVertices;
+	if (FAILED(g_pVB->Lock(0, sizeof(vertices), (void**)&pVertices, 0)))
+		return;
+	memcpy(pVertices, vertices, sizeof(vertices));
+	g_pVB->Unlock();
+
+	WORD *pindexbuf = NULL;
+	pIndexBuffer->Lock(0, 0, (void**)&pindexbuf, 0);
+	memcpy(pindexbuf, indexbuf, sizeof(indexbuf));
+	pIndexBuffer->Unlock();
+
+	m_pDxDevice9->SetStreamSource(0, g_pVB, 0, sizeof(CUSTOMVERTEX));
+	m_pDxDevice9->SetFVF(D3DFVF_CUSTOMVERTEX);
+	m_pDxDevice9->SetIndices(pIndexBuffer);//设置索引缓存  
+
+	m_pDxDevice9->DrawIndexedPrimitive(D3DPT_LINELIST, 0, 0, 8, 0, 4);//利用索引缓存配合顶点缓存绘制图形  
 	g_pVB->Release();
 	pIndexBuffer->Release();
 }

@@ -28,6 +28,7 @@ public:
 	void Render();
 
 	void DrawLine(int sx, int sy, int dx, int dy, DWORD dwColor);
+	void DrawRectangleFill(RECT rect, DWORD dwColor);
 	void DrawRectangle(RECT rect, DWORD dwColor);
 private:
 
