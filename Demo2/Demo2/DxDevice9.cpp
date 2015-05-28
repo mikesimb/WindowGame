@@ -1,5 +1,6 @@
 #include "DxDevice9.h"
 #include <windows.h>
+
 /*
 1、设备方面显示模式监测
 2、设备能力的监测
@@ -70,6 +71,8 @@ HRESULT CDxDevice9::InitiD3D(CBaseWindow* ParentWindow)
 		return E_FAIL;
 	}
 
+	m_font.Init(m_pDxDevice9, L"宋体");
+
 	return S_OK;
 
 }
@@ -105,7 +108,8 @@ void CDxDevice9::Render()
 		re.bottom = 400;
 
 		DrawRectangle(re, 0xFF00FF00);
-
+		m_font.DrawTextW(NULL);
+	
 		m_pDxDevice9->EndScene();
 	}
 

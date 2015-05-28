@@ -4,7 +4,7 @@
 #pragma  warning (disable : 4996)
 #include <vector>
 #include "BaseWindow.h"
-
+#include "DxFont.h"
 #pragma comment(lib, "d3d9.lib")  
 #pragma comment(lib, "d3dx9.lib")  
 struct CUSTOMVERTEX
@@ -31,11 +31,12 @@ public:
 	void DrawRectangleFill(RECT rect, DWORD dwColor);
 	void DrawRectangle(RECT rect, DWORD dwColor);
 private:
-
+	CDxFont  m_font;
 	LPDIRECT3D9   m_pD3D9;
 	LPDIRECT3DDEVICE9  m_pDxDevice9;
 	CBaseWindow * m_ParentWindow;
 	BOOL    m_bInitialized;  // «∑Ò≥ı ºªØ£∫
+
 
 };
 
