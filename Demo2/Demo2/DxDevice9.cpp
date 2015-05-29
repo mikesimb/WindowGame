@@ -115,14 +115,24 @@ void CDxDevice9::Render()
 		re.bottom = 400;
 
 		DrawRectangle(re, 0xFF00FF00);
-		m_font.DrawTextW(_T("闪闪发光啊"));
+		RECT rc;
+		rc.left = 10;
+		rc.top = 20;
+		rc.right = 100;
+		rc.bottom = 100;
+		m_font.DrawTextW(_T("闪闪发光啊"),rc);
 		CApplication * app;
 		app = CApplication::Instance();
 
 		RECT formatRect;
 		GetClientRect(m_ParentWindow->GetWindowHandle(), &formatRect);
 		int charCount = swprintf_s(m_strFPS, 20, _T("FPS:%0.3f"),app->Get_FPS());
-		m_font.DrawTextW(m_strFPS);
+		rc.left = 200;
+		rc.top = 20;
+		rc.right = 300;
+		rc.bottom = 100;
+
+		m_font.DrawTextW(m_strFPS , rc);
 		//m_font.DrawText(NULL, m_strFPS, charCount, &formatRect, DT_TOP | DT_RIGHT, D3DCOLOR_XRGB(168, 39, 136));
 
 
