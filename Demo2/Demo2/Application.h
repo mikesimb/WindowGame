@@ -1,7 +1,9 @@
 #pragma once
-
+#include "stdinclud.h"
 #include "BaseWindow.h"
 #include "DxDevice9.h"
+
+
 
 class CApplication :public BaseWindowListener, public CBaseWindowMsgControlListener
 {
@@ -14,6 +16,8 @@ public:
 
 	BOOL CreateForm();
 	BOOL CreateDevice();
+
+	static CApplication * Instance();
 
 	virtual void OnCreate(CBaseWindow * sender);
 	virtual void OnDestroy(CBaseWindow * sender); 

@@ -1,5 +1,11 @@
 #include "DxDevice9.h"
 #include <windows.h>
+#include "Application.h"
+
+#include <tchar.h>
+#include <strsafe.h>
+
+
 
 /*
 1、设备方面显示模式监测
@@ -11,6 +17,7 @@
 
 CDxDevice9::CDxDevice9() : m_pD3D9(NULL), m_pDxDevice9(NULL), m_ParentWindow(NULL)
 {
+	m_strFPS[50] = { 0 };
 }
 
 
@@ -108,7 +115,17 @@ void CDxDevice9::Render()
 		re.bottom = 400;
 
 		DrawRectangle(re, 0xFF00FF00);
-		m_font.DrawTextW(NULL);
+		m_font.DrawTextW(_T("闪闪发光啊"));
+		CApplication * app;
+		app = CApplication::Instance();
+
+		RECT formatRect;
+		GetClientRect(m_ParentWindow->GetWindowHandle(), &formatRect);
+		int charCount = swprintf_s(m_strFPS, 20, _T("FPS:%0.3f"),app->Get_FPS());
+		m_font.DrawTextW(m_strFPS);
+		//m_font.DrawText(NULL, m_strFPS, charCount, &formatRect, DT_TOP | DT_RIGHT, D3DCOLOR_XRGB(168, 39, 136));
+
+
 	
 		m_pDxDevice9->EndScene();
 	}

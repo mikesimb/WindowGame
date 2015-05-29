@@ -1,12 +1,8 @@
 #pragma once
-#include <d3d9.h>
-#include <strsafe.h>
-#pragma  warning (disable : 4996)
-#include <vector>
+#include "stdinclud.h"
 #include "BaseWindow.h"
 #include "DxFont.h"
-#pragma comment(lib, "d3d9.lib")  
-#pragma comment(lib, "d3dx9.lib")  
+ 
 struct CUSTOMVERTEX
 {
 	FLOAT x, y, z, rhw; // The transformed position for the vertex
@@ -36,6 +32,7 @@ private:
 	LPDIRECT3DDEVICE9  m_pDxDevice9;
 	CBaseWindow * m_ParentWindow;
 	BOOL    m_bInitialized;  // «∑Ò≥ı ºªØ£∫
+	WCHAR   m_strFPS[50];
 
 
 };

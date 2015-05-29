@@ -1,7 +1,6 @@
 #pragma once
 #include "BaseWindowMessageControl.h"
-#include <string>
-#include <assert.h>
+#include "stdinclud.h"
 
 
 #define WINDOW_CLASSNAME L"BASEWINDOWS_CLASSNAME"

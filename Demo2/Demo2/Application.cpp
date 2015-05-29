@@ -1,5 +1,5 @@
 #include "Application.h"
-
+static CApplication*  m_Application;
 
 CApplication::CApplication() 
 {
@@ -52,7 +52,6 @@ BOOL CApplication::OnProcessIdel(CBaseWindowMsgControl* Sender)
 {
 	
 
-	Get_FPS();
 	m_DxDevice.Render();
 	return TRUE;
 }
@@ -140,5 +139,17 @@ BOOL CApplication::CreateDevice()
 void CApplication::Run()
 {
 		m_MainForm.Run();
+}
+
+CApplication * CApplication::Instance()
+{
+	if (m_Application == NULL)
+	{
+		m_Application = new CApplication();
+		m_Application->Initizlized();
+	
+	}
+	
+		return m_Application;
 }
 
