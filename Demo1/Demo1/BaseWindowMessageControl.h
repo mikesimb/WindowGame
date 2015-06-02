@@ -63,6 +63,10 @@ inline void CBaseWindowMsgControl::Run()
 				m_bRunning = FALSE;
 			}
 		}
+		else
+		{
+			ProcessIdel();
+		}
 	} while (m_bRunning);
 	timeEndPeriod(1);
 }
