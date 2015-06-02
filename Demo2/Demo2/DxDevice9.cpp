@@ -51,7 +51,7 @@ HRESULT CDxDevice9::InitiD3D(CBaseWindow* ParentWindow)
 
 	//填充D3DPRESENT_PARAMETERS结构体
 	//--------------------------------------------------------------------------------------
-		D3DPRESENT_PARAMETERS d3dpp;
+	
 		ZeroMemory(&d3dpp, sizeof(d3dpp));
 		d3dpp.BackBufferWidth = m_ParentWindow->GetWidth();
 		d3dpp.BackBufferHeight = m_ParentWindow->GetHeight();
@@ -66,8 +66,8 @@ HRESULT CDxDevice9::InitiD3D(CBaseWindow* ParentWindow)
 		d3dpp.AutoDepthStencilFormat = D3DFMT_D24S8;
 		d3dpp.Flags = 0;
 		d3dpp.FullScreen_RefreshRateInHz = 0;
-		d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
-
+		//d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
+		d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_ONE;
 
 	if (FAILED(m_pD3D9->CreateDevice(D3DADAPTER_DEFAULT,
 		D3DDEVTYPE_HAL,
@@ -110,16 +110,16 @@ void CDxDevice9::Render()
 		DrawLine(0, 0, 100, 600, 0xFF00FF00);
 		RECT re;
 		re.left = 300;
-		re.top = 0;
+		re.top = 100;
 		re.right = 500;
 		re.bottom = 400;
 
 		DrawRectangle(re, 0xFF00FF00);
 		RECT rc;
-		rc.left = 10;
-		rc.top = 20;
-		rc.right = 100;
-		rc.bottom = 100;
+		rc.left = 100;
+		rc.top = 200;
+		rc.right = 300;
+		rc.bottom =500;
 		m_font.DrawTextW(_T("闪闪发光啊"),rc);
 		CApplication * app;
 		app = CApplication::Instance();
@@ -127,12 +127,7 @@ void CDxDevice9::Render()
 		RECT formatRect;
 		GetClientRect(m_ParentWindow->GetWindowHandle(), &formatRect);
 		int charCount = swprintf_s(m_strFPS, 20, _T("FPS:%0.3f"),app->Get_FPS());
-		rc.left = 200;
-		rc.top = 20;
-		rc.right = 300;
-		rc.bottom = 100;
-
-		m_font.DrawTextW(m_strFPS , rc);
+		m_font.DrawTextW(m_strFPS, formatRect);
 		//m_font.DrawText(NULL, m_strFPS, charCount, &formatRect, DT_TOP | DT_RIGHT, D3DCOLOR_XRGB(168, 39, 136));
 
 
@@ -192,6 +187,7 @@ void CDxDevice9::DrawLine(int sx, int sy, int dx, int dy, DWORD dwColor)
 	m_pDxDevice9->SetStreamSource(0, g_pVB, 0, sizeof(CUSTOMVERTEX));
 	m_pDxDevice9->SetFVF(D3DFVF_CUSTOMVERTEX);
 	m_pDxDevice9->DrawPrimitive(D3DPT_LINELIST, 0, 1);
+	//m_pDxDevice9->DrawPrimitiveUP(D3DPT_LINELIST,1, NULL, D3DFMT_INDEX16, NULL, 0);
 	g_pVB->Release();
 
 	
@@ -351,5 +347,35 @@ void CDxDevice9::DrawRectangle(RECT rect, DWORD dwColor)
 	m_pDxDevice9->DrawIndexedPrimitive(D3DPT_LINELIST, 0, 0, 8, 0, 4);//利用索引缓存配合顶点缓存绘制图形  
 	g_pVB->Release();
 	pIndexBuffer->Release();
+}
+
+BOOL CDxDevice9::CheckDeviceLosted()
+{
+	HRESULT hr = m_pDxDevice9->TestCooperativeLevel();
+	switch (hr)
+	{
+	case D3DERR_DEVICELOST:
+		Sleep(25);
+		return true;
+		break;
+	case D3DERR_DEVICENOTRESET:
+		OnDeviceLost(m_pDxDevice9);
+		return true;
+	case S_OK:
+		return false;
+	default:
+		break;
+	}
+
+	return true;
+
+}
+
+void CDxDevice9::OnDeviceLost(LPDIRECT3DDEVICE9 Device)
+{
+	//设备丢失的时候需要处理利用m_pDxDevcie9创建的所有的内容。
+	m_font.Finalize();
+	m_pDxDevice9->Reset(&d3dpp);
+	m_font.Init(m_pDxDevice9, _T("宋体"));
 }
 

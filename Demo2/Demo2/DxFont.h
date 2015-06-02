@@ -7,6 +7,7 @@ public:
 	CDxFont();
 	~CDxFont();
 	BOOL  Init(LPDIRECT3DDEVICE9  device, LPCTSTR lpString);
+	void Finalize();
 	void DrawText(LPCTSTR str,  RECT rc);
 	
 private:

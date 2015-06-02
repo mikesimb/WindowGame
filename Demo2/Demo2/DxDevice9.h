@@ -22,6 +22,8 @@ public:
 	void Clearup();
 
 	void Render();
+	BOOL CheckDeviceLosted();
+	void OnDeviceLost(LPDIRECT3DDEVICE9 Device);
 
 	void DrawLine(int sx, int sy, int dx, int dy, DWORD dwColor);
 	void DrawRectangleFill(RECT rect, DWORD dwColor);
@@ -33,6 +35,7 @@ private:
 	CBaseWindow * m_ParentWindow;
 	BOOL    m_bInitialized;  // «∑Ò≥ı ºªØ£∫
 	WCHAR   m_strFPS[50];
+	D3DPRESENT_PARAMETERS d3dpp;
 
 
 };

@@ -51,7 +51,7 @@ float CApplication::Get_FPS()
 BOOL CApplication::OnProcessIdel(CBaseWindowMsgControl* Sender)
 {
 	
-
+	if (!m_DxDevice.CheckDeviceLosted())
 	m_DxDevice.Render();
 	return TRUE;
 }

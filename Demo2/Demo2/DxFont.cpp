@@ -31,6 +31,13 @@ BOOL CDxFont::Init(LPDIRECT3DDEVICE9 device, LPCTSTR lpString)
 	return TRUE;
 }
 
+void CDxFont::Finalize()
+{
+	m_gFont->Release();
+	m_gFont = NULL;
+
+}
+
 
 
 
