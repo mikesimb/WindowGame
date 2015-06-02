@@ -28,6 +28,9 @@ public:
 	void DrawLine(int sx, int sy, int dx, int dy, DWORD dwColor);
 	void DrawRectangleFill(RECT rect, DWORD dwColor);
 	void DrawRectangle(RECT rect, DWORD dwColor);
+
+	void TextureLoad(const char * FileName, DWORD size, BOOL bMipMap);
+	void*  ResourceLoad(const char* FileName, DWORD* size);
 private:
 	CDxFont  m_font;
 	LPDIRECT3D9   m_pD3D9;

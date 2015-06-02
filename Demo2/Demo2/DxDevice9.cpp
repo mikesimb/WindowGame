@@ -379,3 +379,81 @@ void CDxDevice9::OnDeviceLost(LPDIRECT3DDEVICE9 Device)
 	m_font.Init(m_pDxDevice9, _T("ËÎÌו"));
 }
 
+void*  CDxDevice9::ResourceLoad(const char* FileName, DWORD* size)
+{
+
+}
+
+void CDxDevice9::TextureLoad(const char * FileName, DWORD size, BOOL bMipMap)
+{
+		void *data;
+		DWORD _size;
+		D3DFORMAT fmt1, fmt2;
+		LPDIRECT3DTEXTURE9 pTex;
+		D3DXIMAGE_INFO info;
+//		CTextureList *texItem;
+
+		if (size) { data = (void *)FileName; _size = size; }
+		else
+		{
+		//	data = pHGE->Resource_Load(FileName, &_size);
+			data = ResourceLoad(FileName, &_size);
+			if (!data) return ;
+		}
+
+		if (*(DWORD*)data == 0x20534444) // Compressed DDS format magic number
+		{
+			fmt1 = D3DFMT_UNKNOWN;
+			fmt2 = D3DFMT_A8R8G8B8;
+		}
+		else
+		{
+			fmt1 = D3DFMT_A8R8G8B8;
+			fmt2 = D3DFMT_UNKNOWN;
+		}
+
+		//	if( FAILED( D3DXCreateTextureFromFileInMemory( pD3DDevice, data, _size, &pTex ) ) ) pTex=NULL;
+		if (FAILED(D3DXCreateTextureFromFileInMemoryEx(m_pDxDevice9, data, _size,
+			D3DX_DEFAULT, D3DX_DEFAULT,
+			bMipmap ? 0 : 1,		// Mip levels
+			0,					// Usage
+			fmt1,				// Format
+			D3DPOOL_MANAGED,	// Memory pool
+			D3DX_FILTER_NONE,	// Filter
+			D3DX_DEFAULT,		// Mip filter
+			0,					// Color key
+			&info, NULL,
+			&pTex)))
+
+		if (FAILED(D3DXCreateTextureFromFileInMemoryEx(m_pDxDevice9, data, _size,
+			D3DX_DEFAULT, D3DX_DEFAULT,
+			bMipmap ? 0 : 1,		// Mip levels
+			0,					// Usage
+			fmt2,				// Format
+			D3DPOOL_MANAGED,	// Memory pool
+			D3DX_FILTER_NONE,	// Filter
+			D3DX_DEFAULT,		// Mip filter
+			0,					// Color key
+			&info, NULL,
+			&pTex)))
+
+		{
+			_PostError("Can't create texture");
+			if (!size) Resource_Free(data);
+			return NULL;
+		}
+
+		if (!size) Resource_Free(data);
+
+// 		texItem = new CTextureList;
+// 		texItem->tex = (HTEXTURE)pTex;
+// 		texItem->width = info.Width;
+// 		texItem->height = info.Height;
+// 		texItem->next = textures;
+// 		textures = texItem;
+
+		return (HTEXTURE)pTex;
+	}
+
+}
+

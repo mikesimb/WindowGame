@@ -24,7 +24,7 @@ BOOL CDxFont::Init(LPDIRECT3DDEVICE9 device, LPCTSTR lpString)
 	if (device != NULL)
 	{
 		if (FAILED(D3DXCreateFont(device, 30, 0, 0, 1, FALSE, DEFAULT_CHARSET,
-			OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, 0, _T("ËÎÌו"), &m_gFont)))
+			OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, 0, lpString, &m_gFont)))
 			return E_FAIL;
 	}
 	
