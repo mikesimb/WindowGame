@@ -379,17 +379,44 @@ void CDxDevice9::OnDeviceLost(LPDIRECT3DDEVICE9 Device)
 	m_font.Init(m_pDxDevice9, _T("ËÎÌו"));
 }
 
-void*  CDxDevice9::ResourceLoad(const char* FileName, DWORD* size)
+void*  CDxDevice9::ResourceLoad(const WCHAR* FileName, DWORD* size)
 {
+	
+	void *ptr;
+	DWORD _size;
+	HANDLE hF;
 
+	hF = CreateFile(FileName, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, NULL);
+	if (hF == INVALID_HANDLE_VALUE)
+	{
+		return 0;
+	}
+	_size = GetFileSize(hF, NULL);
+	ptr = malloc(_size);
+	if (!ptr)
+	{
+		CloseHandle(hF);
+
+		return 0;
+	}
+	if (ReadFile(hF, ptr, _size, &_size, NULL) == 0)
+	{
+		CloseHandle(hF);
+		free(ptr);
+		return 0;
+	}
+
+	CloseHandle(hF);
+	if (size) *size = _size;
+	return ptr;
 }
 
-void CDxDevice9::TextureLoad(const char * FileName, DWORD size, BOOL bMipMap)
+LPDIRECT3DTEXTURE9 CDxDevice9::TextureLoad(const WCHAR * FileName, DWORD size, BOOL bMipMap)
 {
 		void *data;
 		DWORD _size;
 		D3DFORMAT fmt1, fmt2;
-		LPDIRECT3DTEXTURE9 pTex;
+		LPDIRECT3DTEXTURE9 pTex =NULL;
 		D3DXIMAGE_INFO info;
 //		CTextureList *texItem;
 
@@ -398,7 +425,7 @@ void CDxDevice9::TextureLoad(const char * FileName, DWORD size, BOOL bMipMap)
 		{
 		//	data = pHGE->Resource_Load(FileName, &_size);
 			data = ResourceLoad(FileName, &_size);
-			if (!data) return ;
+			if (!data) return NULL ;
 		}
 
 		if (*(DWORD*)data == 0x20534444) // Compressed DDS format magic number
@@ -415,7 +442,7 @@ void CDxDevice9::TextureLoad(const char * FileName, DWORD size, BOOL bMipMap)
 		//	if( FAILED( D3DXCreateTextureFromFileInMemory( pD3DDevice, data, _size, &pTex ) ) ) pTex=NULL;
 		if (FAILED(D3DXCreateTextureFromFileInMemoryEx(m_pDxDevice9, data, _size,
 			D3DX_DEFAULT, D3DX_DEFAULT,
-			bMipmap ? 0 : 1,		// Mip levels
+			bMipMap ? 0 : 1,		// Mip levels
 			0,					// Usage
 			fmt1,				// Format
 			D3DPOOL_MANAGED,	// Memory pool
@@ -427,7 +454,7 @@ void CDxDevice9::TextureLoad(const char * FileName, DWORD size, BOOL bMipMap)
 
 		if (FAILED(D3DXCreateTextureFromFileInMemoryEx(m_pDxDevice9, data, _size,
 			D3DX_DEFAULT, D3DX_DEFAULT,
-			bMipmap ? 0 : 1,		// Mip levels
+			bMipMap ? 0 : 1,		// Mip levels
 			0,					// Usage
 			fmt2,				// Format
 			D3DPOOL_MANAGED,	// Memory pool
@@ -438,12 +465,12 @@ void CDxDevice9::TextureLoad(const char * FileName, DWORD size, BOOL bMipMap)
 			&pTex)))
 
 		{
-			_PostError("Can't create texture");
-			if (!size) Resource_Free(data);
+// 			_PostError("Can't create texture");
+// 			if (!size) Resource_Free(data);
 			return NULL;
 		}
 
-		if (!size) Resource_Free(data);
+		//if (!size) Resource_Free(data);
 
 // 		texItem = new CTextureList;
 // 		texItem->tex = (HTEXTURE)pTex;
@@ -452,8 +479,7 @@ void CDxDevice9::TextureLoad(const char * FileName, DWORD size, BOOL bMipMap)
 // 		texItem->next = textures;
 // 		textures = texItem;
 
-		return (HTEXTURE)pTex;
-	}
+		return pTex;
 
 }
 

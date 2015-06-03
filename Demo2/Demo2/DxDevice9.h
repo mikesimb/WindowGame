@@ -29,8 +29,8 @@ public:
 	void DrawRectangleFill(RECT rect, DWORD dwColor);
 	void DrawRectangle(RECT rect, DWORD dwColor);
 
-	void TextureLoad(const char * FileName, DWORD size, BOOL bMipMap);
-	void*  ResourceLoad(const char* FileName, DWORD* size);
+	LPDIRECT3DTEXTURE9 TextureLoad(const  WCHAR* FileName, DWORD size, BOOL bMipMap);
+	void*  ResourceLoad(const  WCHAR* FileName, DWORD* size);
 private:
 	CDxFont  m_font;
 	LPDIRECT3D9   m_pD3D9;
