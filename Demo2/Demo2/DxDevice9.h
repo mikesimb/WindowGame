@@ -5,13 +5,13 @@
  
 struct CUSTOMVERTEX
 {
-	FLOAT x, y, z, rhw; // The transformed position for the vertex
+	FLOAT x, y, z,rhw; // The transformed position for the vertex
 	DWORD color;        // The vertex color
 };
 
 // Our custom FVF, which describes our custom vertex structure
-#define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZRHW |D3DFVF_DIFFUSE)
-
+//#define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZRHW |D3DFVF_DIFFUSE)
+#define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZRHW|D3DFVF_TEX1)
 class CDxDevice9
 {
 public:
@@ -31,6 +31,7 @@ public:
 
 	LPDIRECT3DTEXTURE9 TextureLoad(const  WCHAR* FileName, DWORD size, BOOL bMipMap);
 	void*  ResourceLoad(const  WCHAR* FileName, DWORD* size);
+	void DrawTexture(LPDIRECT3DTEXTURE9 pTexture, RECT rect, DWORD dwColor = 0xffffffff);
 private:
 	CDxFont  m_font;
 	LPDIRECT3D9   m_pD3D9;
@@ -39,6 +40,8 @@ private:
 	BOOL    m_bInitialized;  // «∑Ò≥ı ºªØ£∫
 	WCHAR   m_strFPS[50];
 	D3DPRESENT_PARAMETERS d3dpp;
+
+	LPDIRECT3DTEXTURE9 m_pTexture;
 
 
 };
